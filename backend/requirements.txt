@@ -1,0 +1,10 @@
+groq==0.11.0
+gtts==2.5.1
+fastapi==0.115.0
+uvicorn==0.30.6
+python-multipart==0.0.9
+deep-translator==1.11.4
+twilio==9.3.3
+pillow==10.4.0
+python-dotenv==1.0.1
+pydantic==2.9.2

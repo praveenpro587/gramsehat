@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GramSehat 🏥 — Rural AI Health Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-content">
+            <div class="logo">🏥 GramSehat</div>
+            <div class="tagline">ग्राम स्वास्थ्य सहायक &nbsp;|&nbsp; Rural AI Health Assistant</div>
+            <div class="powered-by">Powered by Groq · 100% Free APIs · Works on 2G</div>
+        </div>
+    </header>
+
+    <!-- PIPELINE INDICATOR -->
+    <div class="pipeline">
+        <div class="pipe-step active" id="pipe1">① Patient Info</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" id="pipe2">② Symptoms</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" id="pipe3">③ Vision</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" id="pipe4">④ Diagnosis</div>
+    </div>
+
+    <main>
+
+        <!-- STEP 1: PATIENT INFO -->
+        <section class="card" id="card1">
+            <div class="card-header">
+                <span class="step-badge">Step 1</span>
+                <h2>Patient Details</h2>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Patient Name / रोगी का नाम</label>
+                    <input type="text" id="patientName" placeholder="e.g. Ramabai Patil" />
+                </div>
+                <div class="form-group">
+                    <label>Age / उम्र</label>
+                    <input type="number" id="age" placeholder="e.g. 34" min="0" max="120" />
+                </div>
+                <div class="form-group">
+                    <label>Language / भाषा</label>
+                    <select id="language">
+                        <option value="hindi">Hindi / हिंदी</option>
+                        <option value="marathi">Marathi / मराठी</option>
+                        <option value="telugu">Telugu / తెలుగు</option>
+                        <option value="tamil">Tamil / தமிழ்</option>
+                        <option value="bengali">Bengali / বাংলা</option>
+                        <option value="kannada">Kannada / ಕನ್ನಡ</option>
+                        <option value="gujarati">Gujarati / ગુજરાતી</option>
+                        <option value="odia">Odia / ଓଡ଼ିଆ</option>
+                        <option value="malayalam">Malayalam / മലയാളം</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Region / क्षेत्र</label>
+                    <select id="region">
+                        <option value="maharashtra">Maharashtra</option>
+                        <option value="uttar pradesh">Uttar Pradesh</option>
+                        <option value="bihar">Bihar</option>
+                        <option value="rajasthan">Rajasthan</option>
+                        <option value="west bengal">West Bengal</option>
+                        <option value="odisha">Odisha</option>
+                        <option value="andhra pradesh">Andhra Pradesh</option>
+                        <option value="telangana">Telangana</option>
+                        <option value="tamil nadu">Tamil Nadu</option>
+                        <option value="gujarat">Gujarat</option>
+                        <option value="assam">Assam</option>
+                        <option value="jharkhand">Jharkhand</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Season / मौसम</label>
+                    <select id="season">
+                        <option value="monsoon">Monsoon (June–Sep)</option>
+                        <option value="summer">Summer (Mar–May)</option>
+                        <option value="winter">Winter (Oct–Feb)</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="goToStep2()">Continue →</button>
+        </section>
+
+        <!-- STEP 2: SYMPTOMS -->
+        <section class="card hidden" id="card2">
+            <div class="card-header">
+                <span class="step-badge">Step 2</span>
+                <h2>Describe Symptoms</h2>
+            </div>
+            <p class="hint">Type symptoms in any language. Our AI understands Hindi, Marathi, Telugu and more.</p>
+
+            <div class="form-group">
+                <label>Symptoms / लक्षण</label>
+                <textarea id="symptoms" rows="4"
+                    placeholder="3 दिनों से बुखार है, कंपकंपी आती है, आंखें पीली दिख रही हैं...
+Or type in English: Fever for 3 days with chills, yellow eyes..."></textarea>
+            </div>
+
+            <!-- Voice Input Option -->
+            <!-- <div class="voice-section">
+                <div class="voice-label">🎤 Or Record Voice (Optional)</div>
+                <div class="voice-controls">
+                    <button class="btn btn-voice" id="recordBtn" onclick="toggleRecording()">
+                        🎤 Start Recording
+                    </button>
+                    <span id="recordingStatus" class="recording-status"></span>
+                </div>
+                <audio id="audioPlayback" controls class="hidden"></audio>
+            </div> -->
+            <div class="voice-section">
+                <div class="voice-label">🎤 Or Record Voice (Optional)</div>
+                <div class="voice-controls">
+                    <button class="btn btn-voice" id="recordBtn" onclick="toggleRecording()">
+                        🎤 Start Recording
+                    </button>
+                    <span id="recordingStatus" class="recording-status"></span>
+                </div>
+                <audio id="audioPlayback" controls class="hidden"></audio>
+
+                <!-- Transcription review box -->
+                <div id="transcriptionReview" class="hidden">
+                    <div class="transcription-label">
+                        ✏️ <strong>Check & Edit Transcription</strong>
+                        <span class="transcription-hint">Whisper heard this — correct any mistakes before submitting</span>
+                    </div>
+                    <textarea id="transcribedText" rows="3"
+                        placeholder="Transcribed text will appear here..."></textarea>
+                    <div class="transcription-actions">
+                        <button class="btn btn-voice" onclick="useTranscription()">
+                            ✅ Use This Text
+                        </button>
+                        <button class="btn btn-outline" onclick="reRecord()">
+                            🔄 Re-Record
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToStep1()">← Back</button>
+                <button class="btn btn-primary" onclick="triageSymptoms()">🔍 Analyze Symptoms</button>
+            </div>
+
+            <!-- Triage Result -->
+            <div id="triageResult" class="result-box hidden"></div>
+
+            <div id="continueToVision" class="hidden">
+                <button class="btn btn-secondary" onclick="goToStep3()">Continue to Image Analysis →</button>
+            </div>
+        </section>
+
+        <!-- STEP 3: IMAGE ANALYSIS -->
+        <section class="card hidden" id="card3">
+            <div class="card-header">
+                <span class="step-badge">Step 3</span>
+                <h2>Photo Analysis <span class="optional-badge">Optional</span></h2>
+            </div>
+            <p class="hint">Take a photo of the affected area — rash, wound, eyes, skin. Our AI will analyze it.</p>
+
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageUpload').click()">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Tap to take photo or upload image</div>
+                <div class="upload-sub">Works with rashes, wounds, eye conditions, skin infections</div>
+                <input type="file" id="imageUpload" accept="image/*" capture="environment"
+                    onchange="previewImage(this)" class="hidden" />
+            </div>
+
+            <div id="imagePreview" class="hidden">
+                <img id="previewImg" src="" alt="Patient photo" />
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToStep2()">← Back</button>
+                <button class="btn btn-secondary" onclick="analyzeImage()" id="analyzeImgBtn" disabled>
+                    🔬 Analyze Image
+                </button>
+            </div>
+
+            <div id="imageResult" class="result-box hidden"></div>
+
+            <div class="btn-row" style="margin-top:16px">
+                <button class="btn btn-outline" onclick="goToStep4()">Skip Image →</button>
+                <button class="btn btn-primary hidden" id="continueTodiagnosis" onclick="goToStep4()">
+                    Continue to Diagnosis →
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 4: FINAL DIAGNOSIS -->
+        <section class="card hidden" id="card4">
+            <div class="card-header">
+                <span class="step-badge">Step 4</span>
+                <h2>Final Diagnosis</h2>
+            </div>
+            <p class="hint">Our AI will now combine all information to provide a diagnosis and urgency assessment.</p>
+
+            <div class="form-group">
+                <!-- <label>📱 ASHA Worker Phone (Optional)</label>
+                <input type="tel" id="ashaPhone"
+                    placeholder="+91XXXXXXXXXX — Will get WhatsApp alert if emergency" /> -->
+                <label>📧 ASHA Worker Email (Optional)</label>
+                <input type="email" id="ashaPhone"
+                    placeholder="ashaworker@gmail.com — Will get email alert if emergency" />
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToStep3()">← Back</button>
+                <button class="btn btn-danger" onclick="getDiagnosis()">🩺 Get Diagnosis</button>
+            </div>
+
+            <!-- Diagnosis Result -->
+            <div id="diagnosisResult" class="result-box hidden"></div>
+
+            <!-- Audio Response -->
+            <div id="audioSection" class="hidden">
+                <div class="audio-label">🔊 Listen in your language:</div>
+                <audio id="diagnosisAudio" controls></audio>
+            </div>
+
+            <!-- Restart -->
+            <div id="restartSection" class="hidden">
+                <button class="btn btn-outline" onclick="restartApp()" style="margin-top:16px">
+                    🔄 New Patient
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div>🏥 GramSehat — Built for India's 800 million rural citizens</div>
+        <div class="footer-stack">
+            Groq Llama 3.1 70B &nbsp;·&nbsp; Llama 3.2 Vision &nbsp;·&nbsp;
+            Whisper Large V3 &nbsp;·&nbsp; gTTS &nbsp;·&nbsp; Google Translate
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
