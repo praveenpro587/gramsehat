@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 
 from services.llm_service import triage_symptoms, generate_diagnosis, analyze_with_answers
-from services.vision_service import analyze_image
+from services.vision_service import analyze_image,analyze_pdf_report,analyze_report_image
 from services.translate_service import translate_to_local, translate_to_english
 from services.speech_service import transcribe_audio, text_to_speech
 from services.notify_service import notify_asha_worker
@@ -196,6 +196,41 @@ async def analyze_patient_image(
         "translated_findings": translated_findings
     }
 
+@app.post("/api/analyze-report")
+async def analyze_medical_report(
+    file: UploadFile = File(...),
+    report_type: str = Form(...),
+    symptom_context: str = Form(""),
+    language: str = Form("english")
+):
+    """
+    Analyzes medical reports — blood test, X-ray, prescription etc.
+    Supports both image and PDF formats.
+    """
+
+    # Read file
+    file_bytes = await file.read()
+
+    # Check if PDF or image
+    is_pdf = file.content_type == "application/pdf" or file.filename.endswith(".pdf")
+
+    if is_pdf:
+        # For PDFs extract text using basic method
+        findings = analyze_pdf_report(file_bytes, report_type, symptom_context)
+    else:
+        # For images use vision model
+        image_base64 = base64.b64encode(file_bytes).decode("utf-8")
+        findings = analyze_report_image(image_base64, report_type, symptom_context)
+
+    # Translate to local language
+    translated = translate_to_local(findings, language)
+
+    return {
+        "report_findings": findings,
+        "translated_findings": translated,
+        "report_type": report_type
+    }
+
 
 # ─────────────────────────────────────────────
 # STEP 3: FINAL DIAGNOSIS
@@ -207,6 +242,7 @@ async def full_diagnosis(
     age: int = Form(...),
     symptoms_summary: str = Form(...),
     visual_findings: str = Form(""),
+    report_findings: str = Form(""),
     language: str = Form(...),
     region: str = Form("maharashtra"),
     asha_email: str = Form(""),
@@ -220,7 +256,12 @@ async def full_diagnosis(
         raise HTTPException(status_code=400, detail="Symptoms summary cannot be empty")
 
     # Generate diagnosis using Groq Llama
-    diagnosis = generate_diagnosis(symptoms_summary, visual_findings, age, region)
+    # Combine visual and report findings
+    combined_findings = visual_findings
+    if report_findings:
+        combined_findings += f"\nMedical Report Analysis: {report_findings}"
+
+    diagnosis = generate_diagnosis(symptoms_summary, combined_findings, age, region)
 
     urgency         = diagnosis.get("URGENCY", "YELLOW")
     probable_dx     = diagnosis.get("DIAGNOSIS", "Unknown condition")

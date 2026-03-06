@@ -80,7 +80,9 @@
         <div class="pipe-arrow">→</div>
         <div class="pipe-step" id="pipe3">③ Vision</div>
         <div class="pipe-arrow">→</div>
-        <div class="pipe-step" id="pipe4">④ Diagnosis</div>
+        <div class="pipe-step" id="pipe4">④ Reports</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step" id="pipe5">⑤ Diagnosis</div>
     </div>
 
     <main>
@@ -259,13 +261,79 @@ Or type in English: Fever for 3 days with chills, yellow eyes..."></textarea>
             <div class="btn-row" style="margin-top:16px">
                 <button class="btn btn-outline" onclick="goToStep4()">Skip Image →</button>
                 <button class="btn btn-primary hidden" id="continueTodiagnosis" onclick="goToStep4()">
+                    Continue to Reports →
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 4: MEDICAL REPORTS -->
+        <section class="card hidden" id="card4">
+            <div class="card-header">
+                <span class="step-badge">Step 4</span>
+                <h2>Medical Reports <span class="optional-badge">Optional</span></h2>
+            </div>
+            <p class="hint">Upload any medical reports — blood test, X-ray, prescription, discharge summary. AI will analyze them.</p>
+
+            <!-- UPLOAD AREA -->
+            <div class="upload-area" id="reportUploadArea"
+                onclick="document.getElementById('reportUpload').click()">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Tap to upload medical report</div>
+                <div class="upload-sub">Supports PDF, JPG, PNG — Blood test, X-ray, Prescription</div>
+                <input type="file" id="reportUpload"
+                    accept="image/*,.pdf"
+                    onchange="previewReport(this)" class="hidden" />
+            </div>
+
+            <!-- REPORT PREVIEW -->
+            <div id="reportPreview" class="hidden">
+                <div class="report-preview-box">
+                    <span id="reportFileName">📄 report.pdf</span>
+                    <button class="remove-report-btn" onclick="removeReport()">✕</button>
+                </div>
+                <img id="reportImgPreview" src="" alt="Report preview"
+                    class="hidden" style="max-width:100%; max-height:200px;
+                    border-radius:10px; margin-top:10px; border:2px solid var(--grey-border)"/>
+            </div>
+
+            <!-- REPORT TYPE -->
+            <div class="form-group" style="margin-top:12px">
+                <label for="reportType">Report Type / रिपोर्ट का प्रकार</label>
+                <select id="reportType">
+                    <option value="blood_test">🩸 Blood Test Report</option>
+                    <option value="xray">🫁 X-Ray Report</option>
+                    <option value="prescription">💊 Doctor Prescription</option>
+                    <option value="discharge">🏥 Discharge Summary</option>
+                    <option value="urine_test">🧪 Urine Test Report</option>
+                    <option value="ecg">❤️ ECG Report</option>
+                    <option value="other">📄 Other Medical Document</option>
+                </select>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToStep3()">← Back</button>
+                <button class="btn btn-secondary" onclick="analyzeReport()"
+                    id="analyzeReportBtn" disabled>
+                    🔬 Analyze Report
+                </button>
+            </div>
+
+            <!-- REPORT RESULT -->
+            <div id="reportResult" class="result-box hidden"></div>
+
+            <div class="btn-row" style="margin-top:16px">
+                <button class="btn btn-outline" onclick="goToStep5()">
+                    Skip Reports →
+                </button>
+                <button class="btn btn-primary hidden" id="continueTodiagnosis2"
+                    onclick="goToStep5()">
                     Continue to Diagnosis →
                 </button>
             </div>
         </section>
 
-        <!-- STEP 4: FINAL DIAGNOSIS -->
-        <section class="card hidden" id="card4">
+        <!-- STEP 5: FINAL DIAGNOSIS -->
+        <section class="card hidden" id="card5">
             <div class="card-header">
                 <span class="step-badge">Step 4</span>
                 <h2>Final Diagnosis</h2>

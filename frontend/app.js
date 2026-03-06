@@ -145,8 +145,18 @@ function goToStep4() {
     setPipeActive(4);
 }
 
+function goToStep5() {
+    showCard(5);
+    setPipeActive(5);
+}
+
+function goToStep5Back() {
+    showCard(4);
+    setPipeActive(4);
+}
+
 function showCard(n) {
-    [1,2,3,4].forEach(i => {
+    [1,2,3,4,5].forEach(i => {
         const card = document.getElementById(`card${i}`);
         if (card) card.classList.toggle("hidden", i !== n);
     });
@@ -154,7 +164,7 @@ function showCard(n) {
 }
 
 function setPipeActive(n) {
-    [1,2,3,4].forEach(i => {
+    [1,2,3,4,5].forEach(i => {
         const step = document.getElementById(`pipe${i}`);
         if (!step) return;
         step.classList.remove("active", "done");
@@ -643,6 +653,7 @@ async function getDiagnosis() {
         formData.append("age", age);
         formData.append("symptoms_summary", triageSummary);
         formData.append("visual_findings", visualFindings);
+        formData.append("report_findings", reportFindings || "");
         formData.append("language", language);
         formData.append("region", region);
         formData.append("asha_email", ashaPhone);
@@ -726,6 +737,10 @@ function restartApp() {
     visualFindings = "";
     recordedBlob   = null;
 
+    reportFindings = "";
+    document.getElementById("reportUpload").value = "";
+    document.getElementById("analyzeReportBtn").disabled = true;
+
     ["patientName","age","symptoms","ashaPhone"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = "";
@@ -746,7 +761,8 @@ function restartApp() {
     document.getElementById("recordingStatus").textContent = "";
     document.getElementById("questionsSection").classList.add("hidden");
 
-    ["continueToVision","continueTodiagnosis","restartSection","hospitalSection"].forEach(id => {
+    ["continueToVision","continueTodiagnosis","continueTodiagnosis2",
+ "restartSection","hospitalSection","reportResult","reportPreview"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add("hidden");
     });
@@ -1141,6 +1157,92 @@ function showNearestHospitals(region, urgency) {
          </p>`;
 
     listEl.innerHTML = emergencyHTML + hospitalsHTML;
+}
+
+// ─── MEDICAL REPORTS ──────────────────────────────
+
+let reportFindings = "";
+
+function previewReport(input) {
+    if (!input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    const fileName = file.name;
+    const isImage  = file.type.startsWith("image/");
+
+    // Show preview box
+    document.getElementById("reportPreview").classList.remove("hidden");
+    document.getElementById("reportFileName").textContent = `📄 ${fileName}`;
+    document.getElementById("analyzeReportBtn").disabled = false;
+
+    // Show image preview if it's an image
+    const imgPreview = document.getElementById("reportImgPreview");
+    if (isImage) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            imgPreview.src = e.target.result;
+            imgPreview.classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+    } else {
+        imgPreview.classList.add("hidden");
+    }
+}
+
+function removeReport() {
+    document.getElementById("reportUpload").value = "";
+    document.getElementById("reportPreview").classList.add("hidden");
+    document.getElementById("reportImgPreview").classList.add("hidden");
+    document.getElementById("analyzeReportBtn").disabled = true;
+    reportFindings = "";
+}
+
+async function analyzeReport() {
+    const file       = document.getElementById("reportUpload").files[0];
+    const reportType = document.getElementById("reportType").value;
+    const language   = document.getElementById("language").value;
+    const resultBox  = document.getElementById("reportResult");
+
+    if (!file) { showError("Please upload a report first"); return; }
+
+    setLoading(resultBox, "📄 Analyzing medical report with AI...");
+
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("report_type", reportType);
+        formData.append("symptom_context", triageSummary || "General health checkup");
+        formData.append("language", language);
+
+        const res  = await fetch(`${API}/analyze-report`, { method: "POST", body: formData });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Report analysis failed");
+
+        reportFindings = data.report_findings;
+
+        resultBox.className = "result-box";
+        resultBox.innerHTML = `
+            <strong>📋 Report Analysis:</strong>
+            <br/><br/>
+            🇬🇧 <strong>English:</strong><br/>
+            ${formatText(data.report_findings)}
+            <hr/>
+            🇮🇳 <strong>Local Language:</strong><br/>
+            ${formatText(data.translated_findings)}
+            <hr/>
+            <small style="color:#666">
+                ✅ Analyzed by Groq Llama 4 Vision
+            </small>
+        `;
+        resultBox.classList.remove("hidden");
+        document.getElementById("continueTodiagnosis2").classList.remove("hidden");
+
+    } catch (err) {
+        resultBox.className = "result-box red";
+        resultBox.innerHTML = `❌ Error: ${err.message}`;
+        resultBox.classList.remove("hidden");
+        document.getElementById("continueTodiagnosis2").classList.remove("hidden");
+    }
 }
 
 // ─── INIT ─────────────────────────────────────────
