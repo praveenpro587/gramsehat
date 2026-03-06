@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 
-from services.llm_service import triage_symptoms, generate_diagnosis
+from services.llm_service import triage_symptoms, generate_diagnosis, analyze_with_answers
 from services.vision_service import analyze_image
 from services.translate_service import translate_to_local, translate_to_english
 from services.speech_service import transcribe_audio, text_to_speech
@@ -79,6 +79,38 @@ async def triage_patient(
         triage_summary=triage_result,
         translated_response=translated
     )
+
+@app.post("/api/analyze-answers")
+async def analyze_answers(
+    patient_name: str = Form(...),
+    age: int = Form(...),
+    language: str = Form(...),
+    symptoms_text: str = Form(...),
+    questions_and_answers: str = Form(...),
+    region: str = Form("maharashtra"),
+    season: str = Form("monsoon")
+):
+    """
+    Takes patient's yes/no answers to follow-up questions
+    and produces an updated detailed symptom analysis.
+    """
+    # Translate to English if needed
+    symptoms_english = translate_to_english(symptoms_text, language)
+    qa_english = translate_to_english(questions_and_answers, "english")
+
+    # Analyze with answers
+    updated_analysis = analyze_with_answers(
+        symptoms_english, qa_english, age, season, region
+    )
+
+    # Translate back to local language
+    translated = translate_to_local(updated_analysis, language)
+
+    return {
+        "updated_summary": updated_analysis,
+        "translated_summary": translated,
+        "patient": patient_name
+    }
 
 
 # ─────────────────────────────────────────────
@@ -177,7 +209,8 @@ async def full_diagnosis(
     visual_findings: str = Form(""),
     language: str = Form(...),
     region: str = Form("maharashtra"),
-    asha_phone: str = Form("")
+    asha_email: str = Form(""),
+    asha_phone: str = Form("")  # backward compat
 ):
     """
     Generates final diagnosis with urgency level.
@@ -210,8 +243,10 @@ async def full_diagnosis(
     #     result = notify_asha_worker(patient_name, urgency, probable_dx, asha_phone)
     #     asha_notified = bool(result)
 
-    if urgency == "RED" and asha_phone.strip():
-        result = notify_asha_worker(patient_name, urgency, probable_dx, asha_phone)
+    # Accept either asha_email or asha_phone
+    contact = asha_email.strip() or asha_phone.strip()
+    if urgency == "RED" and contact:
+        result = notify_asha_worker(patient_name, urgency, probable_dx, contact)
         asha_notified = bool(result)
 
     return DiagnosisResponse(

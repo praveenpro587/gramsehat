@@ -151,8 +151,24 @@ Or type in English: Fever for 3 days with chills, yellow eyes..."></textarea>
             <!-- Triage Result -->
             <div id="triageResult" class="result-box hidden"></div>
 
+            <!-- YES/NO QUESTIONS SECTION -->
+            <div id="questionsSection" class="hidden">
+                <div class="questions-header">
+                    💬 Please answer these questions to help us understand better:
+                </div>
+                <div id="questionsList"></div>
+                <button class="btn btn-primary" onclick="submitAnswers()">
+                    ✅ Submit Answers & Analyse
+                </button>
+            </div>
+
+            <!-- UPDATED ANALYSIS RESULT -->
+            <div id="updatedAnalysis" class="result-box hidden"></div>
+
             <div id="continueToVision" class="hidden">
-                <button class="btn btn-secondary" onclick="goToStep3()">Continue to Image Analysis →</button>
+                <button class="btn btn-secondary" onclick="goToStep3()">
+                    Continue to Image Analysis →
+                </button>
             </div>
         </section>
 

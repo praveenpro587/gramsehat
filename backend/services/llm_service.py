@@ -8,10 +8,6 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def triage_symptoms(symptoms_text: str, age: int, season: str, region: str) -> str:
-    """
-    Takes patient symptoms and returns triage analysis with follow-up questions.
-    Uses Groq Llama 3.1 70B for fast, accurate responses.
-    """
     prompt = f"""You are a rural healthcare assistant in India helping ASHA workers triage patients.
 
 Patient Age: {age}
@@ -20,16 +16,24 @@ Season: {season}
 Symptoms described: {symptoms_text}
 
 Your job:
-1. Summarize what the patient is experiencing
-2. Ask 3 smart follow-up questions to better understand the condition
+1. Summarize what the patient is experiencing in one line
+2. Ask exactly 3 YES/NO questions to better understand the condition
 3. Assign an initial concern level
 
-Focus on diseases common in rural India: Malaria, Dengue, Typhoid, Diarrhea, Tuberculosis, Anemia, Snake bite.
+Focus on diseases common in rural India: Malaria, Dengue, Typhoid, Diarrhea, Tuberculosis, Anemia.
 Consider the season (monsoon = higher malaria/dengue risk) and region.
 
+IMPORTANT: Questions must be simple YES or NO answerable questions only.
+Example good questions:
+- Do you have fever for more than 3 days?
+- Are you experiencing vomiting?
+- Do you have pain in your body?
+
 Respond STRICTLY in this format:
-SUMMARY: <one line summary of symptoms>
-QUESTIONS: <question 1> | <question 2> | <question 3>
+SUMMARY: <one line summary>
+QUESTION1: <yes/no question>
+QUESTION2: <yes/no question>
+QUESTION3: <yes/no question>
 CONCERN_LEVEL: <low/medium/high>
 """
 
@@ -37,7 +41,7 @@ CONCERN_LEVEL: <low/medium/high>
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=500,
-        temperature=0.3   # Low temp for consistent medical responses
+        temperature=0.3
     )
     return response.choices[0].message.content
 
@@ -101,4 +105,44 @@ HOME_REMEDIES: <2-3 simple home remedies using kitchen items>
     result.setdefault("MEDICINE_WARNING", "Always consult a doctor before taking any medicine")
     result.setdefault("HOME_REMEDIES", "Drink warm water with tulsi leaves | Rest in cool place | Stay hydrated")
 
+    return result
+
+
+def analyze_with_answers(symptoms_text: str, questions_and_answers: str,
+                          age: int, season: str, region: str) -> str:
+    """
+    Re-analyzes symptoms with the patient's yes/no answers included.
+    Produces a much more accurate triage summary.
+    """
+    prompt = f"""You are a rural healthcare assistant in India.
+
+Patient Age: {age}
+Region: {region}
+Season: {season}
+Initial Symptoms: {symptoms_text}
+
+Follow-up Questions and Patient Answers:
+{questions_and_answers}
+
+Based on the symptoms AND the answers above:
+1. Write an updated detailed symptom summary
+2. Identify the most likely disease
+3. Assign updated concern level
+
+Focus on: Malaria, Dengue, Typhoid, Diarrhea, TB, Anemia.
+
+Respond STRICTLY in this format:
+SUMMARY: <detailed updated summary including answers>
+LIKELY_DISEASE: <most probable disease>
+CONCERN_LEVEL: <low/medium/high>
+REASON: <why you think this disease based on answers>
+"""
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=600,
+        temperature=0.3
+    )
+    result = response.choices[0].message.content
     return result
