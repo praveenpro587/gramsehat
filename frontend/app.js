@@ -34,6 +34,91 @@ const NO_TRANSLATIONS = {
     malayalam:"ഇല്ല (Illa)"
 };
 
+// ─── HOSPITAL DATA ────────────────────────────────
+const HOSPITALS_BY_REGION = {
+    "andhra pradesh": [
+        { name: "Government General Hospital Guntur", type: "Government", distance: "District HQ", phone: "0863-2226111", emergency: true },
+        { name: "King George Hospital Visakhapatnam", type: "Government", distance: "Major City", phone: "0891-2564891", emergency: true },
+        { name: "SVIMS Tirupati", type: "Government", distance: "Major City", phone: "0877-2287777", emergency: true },
+        { name: "Ramesh Hospitals", type: "Private", distance: "Guntur", phone: "0863-2344444", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "telangana": [
+        { name: "Osmania General Hospital", type: "Government", distance: "Hyderabad", phone: "040-24600124", emergency: true },
+        { name: "Gandhi Hospital Hyderabad", type: "Government", distance: "Hyderabad", phone: "040-29027889", emergency: true },
+        { name: "NIMS Hyderabad", type: "Government", distance: "Hyderabad", phone: "040-23489000", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "maharashtra": [
+        { name: "JJ Hospital Mumbai", type: "Government", distance: "Mumbai", phone: "022-23735555", emergency: true },
+        { name: "Sassoon General Hospital Pune", type: "Government", distance: "Pune", phone: "020-26128000", emergency: true },
+        { name: "Civil Hospital Nagpur", type: "Government", distance: "Nagpur", phone: "0712-2565011", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "uttar pradesh": [
+        { name: "KGMU Lucknow", type: "Government", distance: "Lucknow", phone: "0522-2257540", emergency: true },
+        { name: "SN Medical College Agra", type: "Government", distance: "Agra", phone: "0562-2411100", emergency: true },
+        { name: "BHU Hospital Varanasi", type: "Government", distance: "Varanasi", phone: "0542-2307402", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "bihar": [
+        { name: "PMCH Patna", type: "Government", distance: "Patna", phone: "0612-2300399", emergency: true },
+        { name: "IGIMS Patna", type: "Government", distance: "Patna", phone: "0612-2297631", emergency: true },
+        { name: "DMCH Darbhanga", type: "Government", distance: "Darbhanga", phone: "06272-222555", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "rajasthan": [
+        { name: "SMS Hospital Jaipur", type: "Government", distance: "Jaipur", phone: "0141-2518888", emergency: true },
+        { name: "MDM Hospital Jodhpur", type: "Government", distance: "Jodhpur", phone: "0291-2434374", emergency: true },
+        { name: "RNT Medical College Udaipur", type: "Government", distance: "Udaipur", phone: "0294-2428811", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "west bengal": [
+        { name: "SSKM Hospital Kolkata", type: "Government", distance: "Kolkata", phone: "033-22044382", emergency: true },
+        { name: "NRS Medical College Kolkata", type: "Government", distance: "Kolkata", phone: "033-22143200", emergency: true },
+        { name: "North Bengal Medical College", type: "Government", distance: "Siliguri", phone: "0353-2580723", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "odisha": [
+        { name: "SCB Medical College Cuttack", type: "Government", distance: "Cuttack", phone: "0671-2414004", emergency: true },
+        { name: "MKCG Medical College Berhampur", type: "Government", distance: "Berhampur", phone: "0680-2227362", emergency: true },
+        { name: "Capital Hospital Bhubaneswar", type: "Government", distance: "Bhubaneswar", phone: "0674-2394006", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "tamil nadu": [
+        { name: "Rajiv Gandhi Govt Hospital Chennai", type: "Government", distance: "Chennai", phone: "044-25305000", emergency: true },
+        { name: "Madurai Govt Hospital", type: "Government", distance: "Madurai", phone: "0452-2532535", emergency: true },
+        { name: "Coimbatore Medical College", type: "Government", distance: "Coimbatore", phone: "0422-2301945", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "gujarat": [
+        { name: "Civil Hospital Ahmedabad", type: "Government", distance: "Ahmedabad", phone: "079-22681111", emergency: true },
+        { name: "SSG Hospital Vadodara", type: "Government", distance: "Vadodara", phone: "0265-2422600", emergency: true },
+        { name: "GG Hospital Jamnagar", type: "Government", distance: "Jamnagar", phone: "0288-2553270", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "assam": [
+        { name: "GMCH Guwahati", type: "Government", distance: "Guwahati", phone: "0361-2529457", emergency: true },
+        { name: "Jorhat Medical College", type: "Government", distance: "Jorhat", phone: "0376-2320073", emergency: true },
+        { name: "Silchar Medical College", type: "Government", distance: "Silchar", phone: "03842-224396", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ],
+    "jharkhand": [
+        { name: "RIMS Ranchi", type: "Government", distance: "Ranchi", phone: "0651-2540381", emergency: true },
+        { name: "MGM Medical College Jamshedpur", type: "Government", distance: "Jamshedpur", phone: "0657-2234788", emergency: true },
+        { name: "Palamu Medical College", type: "Government", distance: "Palamu", phone: "06562-222345", emergency: true },
+        { name: "Nearest PHC", type: "PHC", distance: "~5km", phone: "104", emergency: false }
+    ]
+};
+
+// National Emergency Numbers
+const EMERGENCY_NUMBERS = [
+    { name: "National Ambulance", number: "108", icon: "🚑" },
+    { name: "Health Helpline", number: "104", icon: "🏥" },
+    { name: "Police", number: "100", icon: "👮" },
+    { name: "National Emergency", number: "112", icon: "🆘" }
+];
+
 // ─── NAVIGATION ───────────────────────────────────
 
 function goToStep1() {
@@ -621,6 +706,10 @@ async function getDiagnosis() {
 
         document.getElementById("audioSection").classList.remove("hidden");
         document.getElementById("diagnosisAudio").src = `${API.replace("/api","")}/api/audio-response`;
+        savePatientHistory(name, age, data);
+        // Show nearest hospitals
+        showNearestHospitals(region, urgency);
+        document.getElementById("hospitalSection").classList.remove("hidden");
         document.getElementById("restartSection").classList.remove("hidden");
 
     } catch (err) {
@@ -657,7 +746,7 @@ function restartApp() {
     document.getElementById("recordingStatus").textContent = "";
     document.getElementById("questionsSection").classList.add("hidden");
 
-    ["continueToVision","continueTodiagnosis","restartSection"].forEach(id => {
+    ["continueToVision","continueTodiagnosis","restartSection","hospitalSection"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add("hidden");
     });
@@ -747,6 +836,311 @@ function formatLocalAdvice(advice) {
         .replace(/(<br\s*\/?>){3,}/gi, '<br/><br/>')
         .replace(/^(<br\s*\/?>)+/i, '')
         .trim();
+}
+
+// ─── PATIENT HISTORY ──────────────────────────────
+
+function savePatientHistory(name, age, diagnosisData) {
+    try {
+        const history = JSON.parse(localStorage.getItem("gramsehat_history") || "[]");
+        const record = {
+            id: Date.now(),
+            date: new Date().toLocaleDateString("en-IN"),
+            time: new Date().toLocaleTimeString("en-IN"),
+            name: name,
+            age: age,
+            language: document.getElementById("language").value,
+            region: document.getElementById("region").value,
+            season: document.getElementById("season").value,
+            symptoms: document.getElementById("symptoms").value,
+            diagnosis: diagnosisData.probable_diagnosis,
+            urgency: diagnosisData.urgency_level,
+            urgency_reason: diagnosisData.urgency_reason,
+            first_aid: diagnosisData.first_aid,
+            action: diagnosisData.recommended_action,
+            medicines: diagnosisData.medicines,
+            home_remedies: diagnosisData.home_remedies
+        };
+        history.unshift(record); // Add to beginning
+        // Keep only last 100 patients
+        if (history.length > 100) history.pop();
+        localStorage.setItem("gramsehat_history", JSON.stringify(history));
+        console.log("✅ Patient saved to history:", name);
+    } catch (e) {
+        console.error("Could not save history:", e);
+    }
+}
+
+// ─── DASHBOARD ────────────────────────────────────
+
+let currentUrgencyFilter = "ALL";
+
+function openDashboard() {
+    renderDashboard();
+    document.getElementById("dashboardModal").classList.remove("hidden");
+}
+
+function closeDashboard() {
+    document.getElementById("dashboardModal").classList.add("hidden");
+}
+
+function closeDetail() {
+    document.getElementById("patientDetailModal").classList.add("hidden");
+}
+
+function getHistory() {
+    try {
+        return JSON.parse(localStorage.getItem("gramsehat_history") || "[]");
+    } catch { return []; }
+}
+
+function renderDashboard() {
+    const history = getHistory();
+
+    // Stats
+    const total  = history.length;
+    const red    = history.filter(p => p.urgency === "RED").length;
+    const yellow = history.filter(p => p.urgency === "YELLOW").length;
+    const green  = history.filter(p => p.urgency === "GREEN").length;
+
+    document.getElementById("dashboardStats").innerHTML = `
+        <div class="stat-card">
+            <div class="stat-number">${total}</div>
+            <div class="stat-label">Total Patients</div>
+        </div>
+        <div class="stat-card red-stat">
+            <div class="stat-number">${red}</div>
+            <div class="stat-label">🔴 Emergency</div>
+        </div>
+        <div class="stat-card yellow-stat">
+            <div class="stat-number">${yellow}</div>
+            <div class="stat-label">🟡 Urgent</div>
+        </div>
+        <div class="stat-card green-stat">
+            <div class="stat-number">${green}</div>
+            <div class="stat-label">🟢 Stable</div>
+        </div>
+    `;
+
+    renderHistoryList(history);
+}
+
+function renderHistoryList(history) {
+    const listEl = document.getElementById("historyList");
+
+    if (history.length === 0) {
+        listEl.innerHTML = `
+            <div class="empty-history">
+                <div style="font-size:3rem">📋</div>
+                <div>No patients recorded yet</div>
+                <div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px">
+                    Complete a diagnosis to see history here
+                </div>
+            </div>`;
+        return;
+    }
+
+    listEl.innerHTML = history.map(p => `
+        <div class="history-item" onclick="showPatientDetail(${p.id})">
+            <div class="history-left">
+                <div class="history-name">${p.name}, ${p.age}y</div>
+                <div class="history-diagnosis">${p.diagnosis}</div>
+                <div class="history-meta">📅 ${p.date} ${p.time} · 📍 ${p.region}</div>
+            </div>
+            <div class="history-right">
+                <span class="urgency-badge ${p.urgency.toLowerCase()}">
+                    ${{ RED:"🔴", YELLOW:"🟡", GREEN:"🟢" }[p.urgency]} ${p.urgency}
+                </span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterByUrgency(urgency, btn) {
+    currentUrgencyFilter = urgency;
+
+    // Update button styles
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    filterHistory();
+}
+
+function filterHistory() {
+    let history = getHistory();
+    const search = document.getElementById("historySearch").value.toLowerCase();
+
+    if (currentUrgencyFilter !== "ALL") {
+        history = history.filter(p => p.urgency === currentUrgencyFilter);
+    }
+
+    if (search) {
+        history = history.filter(p =>
+            p.name.toLowerCase().includes(search) ||
+            p.diagnosis.toLowerCase().includes(search)
+        );
+    }
+
+    renderHistoryList(history);
+}
+
+function showPatientDetail(id) {
+    const history = getHistory();
+    const p = history.find(p => p.id === id);
+    if (!p) return;
+
+    const urgencyEmoji = { RED:"🔴", YELLOW:"🟡", GREEN:"🟢" }[p.urgency] || "⚪";
+
+    document.getElementById("patientDetailContent").innerHTML = `
+        <div class="detail-header ${p.urgency.toLowerCase()}">
+            ${urgencyEmoji} ${p.urgency} — ${p.diagnosis}
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">👤 Name</span>
+                <span>${p.name}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">🎂 Age</span>
+                <span>${p.age} years</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">📅 Date</span>
+                <span>${p.date} ${p.time}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">📍 Region</span>
+                <span>${p.region}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">🌧️ Season</span>
+                <span>${p.season}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">🗣️ Language</span>
+                <span>${p.language}</span>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <strong>📝 Symptoms:</strong>
+            <p>${p.symptoms}</p>
+        </div>
+
+        <div class="detail-section">
+            <strong>⚠️ Reason:</strong>
+            <p>${p.urgency_reason}</p>
+        </div>
+
+        <div class="detail-section">
+            <strong>🏠 First Aid:</strong>
+            <p>${p.first_aid}</p>
+        </div>
+
+        <div class="detail-section">
+            <strong>📍 Action:</strong>
+            <p>${p.action}</p>
+        </div>
+
+        <div class="detail-section">
+            <strong>💊 Medicines:</strong>
+            <p>${p.medicines}</p>
+        </div>
+
+        <div class="detail-section">
+            <strong>🌿 Home Remedies:</strong>
+            <p>${p.home_remedies}</p>
+        </div>
+    `;
+
+    document.getElementById("patientDetailModal").classList.remove("hidden");
+}
+
+function exportCSV() {
+    const history = getHistory();
+    if (history.length === 0) {
+        showError("No patient history to export!");
+        return;
+    }
+
+    const headers = ["Date","Time","Name","Age","Region","Season","Language",
+                     "Symptoms","Diagnosis","Urgency","First Aid","Action","Medicines"];
+
+    const rows = history.map(p => [
+        p.date, p.time, p.name, p.age, p.region, p.season, p.language,
+        `"${p.symptoms.replace(/"/g,'""')}"`,
+        `"${p.diagnosis.replace(/"/g,'""')}"`,
+        p.urgency,
+        `"${p.first_aid.replace(/"/g,'""')}"`,
+        `"${p.action.replace(/"/g,'""')}"`,
+        `"${p.medicines.replace(/"/g,'""')}"`
+    ].join(","));
+
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `gramsehat_patients_${new Date().toLocaleDateString("en-IN").replace(/\//g,'-')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function clearHistory() {
+    if (confirm("⚠️ Are you sure you want to delete all patient history? This cannot be undone.")) {
+        localStorage.removeItem("gramsehat_history");
+        renderDashboard();
+    }
+}
+
+// ─── HOSPITAL FINDER ──────────────────────────────
+
+function showNearestHospitals(region, urgency) {
+    const hospitals = HOSPITALS_BY_REGION[region.toLowerCase()] || [];
+    const listEl    = document.getElementById("hospitalList");
+
+    // Emergency numbers section
+    const emergencyHTML = `
+        <div class="emergency-numbers">
+            <div class="emergency-title">🆘 Emergency Numbers — Call Now</div>
+            <div class="emergency-grid">
+                ${EMERGENCY_NUMBERS.map(e => `
+                    <a href="tel:${e.number}" class="emergency-card">
+                        <div class="emergency-icon">${e.icon}</div>
+                        <div class="emergency-number">${e.number}</div>
+                        <div class="emergency-name">${e.name}</div>
+                    </a>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    // Hospitals list
+    const hospitalsHTML = hospitals.length > 0 ? `
+        <div class="hospitals-title">
+            🏥 Hospitals in ${region.charAt(0).toUpperCase() + region.slice(1)}
+        </div>
+        ${hospitals.map(h => `
+            <div class="hospital-item ${h.type.toLowerCase()}">
+                <div class="hospital-left">
+                    <div class="hospital-name">${h.name}</div>
+                    <div class="hospital-meta">
+                        <span class="hospital-type-badge ${h.type.toLowerCase()}">${h.type}</span>
+                        <span>📍 ${h.distance}</span>
+                        ${h.emergency ? '<span class="emergency-badge">✅ 24/7 Emergency</span>' : ''}
+                    </div>
+                </div>
+                <a href="tel:${h.phone}" class="call-btn">
+                    📞 ${h.phone}
+                </a>
+            </div>
+        `).join('')}
+    ` : `<p style="padding:16px; color:var(--text-muted)">
+            No hospital data available for this region yet.
+         </p>`;
+
+    listEl.innerHTML = emergencyHTML + hospitalsHTML;
 }
 
 // ─── INIT ─────────────────────────────────────────
